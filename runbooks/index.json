@@ -1,0 +1,49 @@
+[
+  {
+    "id": "git-pr-lifecycle",
+    "title": "Git PR 生命周期",
+    "path": "runbooks/git-pr-lifecycle.md",
+    "triggers": [
+      "提交代码",
+      "创建 PR",
+      "合并授权",
+      "清理 worktree"
+    ],
+    "owner_skills": [
+      "worktree-isolation",
+      "git-commit"
+    ],
+    "risk_level": "high"
+  },
+  {
+    "id": "skill-quality-gate",
+    "title": "Skill 质量门",
+    "path": "runbooks/skill-quality-gate.md",
+    "triggers": [
+      "校验 skill",
+      "validate-feed",
+      "validate-skills",
+      "Vercel email failure"
+    ],
+    "owner_skills": [
+      "skill-extraction-workflow",
+      "company-skills-sync"
+    ],
+    "risk_level": "medium"
+  },
+  {
+    "id": "opencode-doctor",
+    "title": "Opencode Doctor",
+    "path": "runbooks/opencode-doctor.md",
+    "triggers": [
+      "opencode doctor",
+      "doctor --json",
+      "环境诊断",
+      "配置缺失"
+    ],
+    "owner_skills": [
+      "customize-opencode"
+    ],
+    "risk_level": "low"
+  }
+]
