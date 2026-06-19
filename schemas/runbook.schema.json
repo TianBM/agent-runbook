@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/agent-runbook/schemas/runbook.schema.json",
+  "title": "Agent Runbook Frontmatter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "triggers",
+    "owner_skills",
+    "risk_level"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Runbook 的稳定标识，需要与 runbooks/index.json 中的 id 一致。"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "中文为主的标题。"
+    },
+    "triggers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "触发该 runbook 的关键词或任务描述。"
+    },
+    "owner_skills": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "必须考虑或调用的 owner skill 名称。"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "执行风险等级。"
+    }
+  }
+}
