@@ -92,5 +92,36 @@
       "cloudflare"
     ],
     "risk_level": "high"
+  },
+  {
+    "id": "web-project-quality-assessment",
+    "title": "Web project quality assessment",
+    "path": "runbooks/web-project-quality-assessment.md",
+    "summary": "Web 项目质量评估 runbook，先识别技术选型、渲染模式、项目方向和交付目标，再选择检查策略。",
+    "triggers": [
+      "Web 项目质量",
+      "前端质量检查",
+      "React 项目审查",
+      "Next.js 项目审查",
+      "Vue 项目审查",
+      "Nuxt 项目审查",
+      "WebView H5 检查",
+      "微前端质量",
+      "组件库质量",
+      "管理后台质量",
+      "项目质量评估",
+      "quality assessment",
+      "frontend audit"
+    ],
+    "owner_skills": [
+      "web-react-dev",
+      "product-ui-ux-design",
+      "testing-strategy",
+      "defect-diagnosis",
+      "platform-observability",
+      "platform-release-and-rollout",
+      "web-perf"
+    ],
+    "risk_level": "medium"
   }
 ]
