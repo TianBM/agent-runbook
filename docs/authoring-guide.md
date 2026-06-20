@@ -6,6 +6,7 @@
 - 每篇 runbook 聚焦一个任务，不写成百科。
 - 不复制 skill 正文，只引用 skill 名称、适用边界和调用原因。
 - 所有建议都要落到可执行步骤、验证命令或停止条件。
+- runbook 通过远程索引按需发现，不要求相关 skill 逐条硬编码本文 URL；新增 runbook 时把触发词和 owner skill 写清楚，让 agent 能从索引匹配到它。
 
 ## 必填 frontmatter
 
