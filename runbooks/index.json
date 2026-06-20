@@ -60,5 +60,37 @@
       "worktree-isolation"
     ],
     "risk_level": "high"
+  },
+  {
+    "id": "web-delivery-lifecycle",
+    "title": "Web delivery lifecycle",
+    "path": "runbooks/web-delivery-lifecycle.md",
+    "summary": "Web 项目从编码、推送、CI/CD、部署到监控证据闭环的交付 runbook，区分公网与内网部署路径。",
+    "triggers": [
+      "Web 交付",
+      "前端部署",
+      "CI/CD",
+      "GitLab CI",
+      "Jenkins",
+      "Kubernetes deploy",
+      "Rancher deploy",
+      "Vercel deploy",
+      "Cloudflare Pages deploy",
+      "公网部署",
+      "内网部署",
+      "监控证据"
+    ],
+    "owner_skills": [
+      "web-react-dev",
+      "worktree-isolation",
+      "git-commit",
+      "testing-strategy",
+      "defect-diagnosis",
+      "platform-release-and-rollout",
+      "platform-observability",
+      "deploy-to-vercel",
+      "cloudflare"
+    ],
+    "risk_level": "high"
   }
 ]
