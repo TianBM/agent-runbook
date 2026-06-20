@@ -1,7 +1,7 @@
 ---
 id: web-delivery-lifecycle
 title: Web delivery lifecycle
-summary: Web 项目从编码到部署、监控证据闭环的交付 runbook。
+summary: Web 项目交付生命周期 runbook，覆盖本地验证、CI/CD、公网/内网部署路径和部署后证据闭环。
 triggers:
   - Web 交付
   - 前端部署
@@ -36,6 +36,7 @@ risk_level: high
 ## 不适用
 
 - 只读代码分析，不修改、不推送、不部署。
+- 交付前质量评估或前端质量审查；先用 [Web project quality assessment](web-project-quality-assessment.md)，本 runbook 只负责交付生命周期闭环。
 - 只做设计稿、需求评审或测试用例文档。
 - 只排查单个线上故障；先走缺陷诊断，再回到本 runbook 做交付闭环。
 - 需要安装或配置 Vercel、Cloudflare Pages、GitLab、Jenkins、k8s、Rancher、OTel、ES、Jaeger 等平台；本 runbook 只指导取证与判断。
@@ -69,9 +70,12 @@ risk_level: high
 - `web-react-dev`：实现或修改 React、Next.js、Vite 等 Web 客户端代码时使用。
 - `worktree-isolation`：任何代码修改、分支、PR/MR 或合并动作前使用。
 - `git-commit`：需要创建提交时使用。
+- `testing-strategy`：需要选择 lint、typecheck、test、E2E、smoke 或回归验证层级时使用。
 - `platform-release-and-rollout`：涉及部署、发布、回滚、灰度或环境推进时使用。
 - `platform-observability`：需要判断日志、指标、trace、告警证据是否足够时使用。
 - `defect-diagnosis`：CI/CD、部署或线上验证失败时，先读取一手失败证据再定性。
+- `deploy-to-vercel`：公网路径使用 Vercel 部署、查看部署记录或生成预览链接时使用。
+- `cloudflare`：公网路径使用 Cloudflare Pages、Workers、DNS/CDN 证据源或 Cloudflare 控制面时使用。
 
 ## 验证命令
 
