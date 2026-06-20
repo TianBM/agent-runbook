@@ -53,6 +53,32 @@ bash scripts/validate-runbooks.sh
 
 校验内容包括：索引 JSON、frontmatter 必填字段、id 唯一性、章节完整性、markdown 相对链接、行尾空白等。成功输出 `OK`，失败输出 `ERROR` 并返回非零退出码。
 
+## Vercel 静态发布与远程使用
+
+本仓库可以作为 Vercel 静态站点发布，不需要构建步骤。发布后，Markdown、JSON、schema、docs 和 templates 都按仓库路径直接暴露为 URL；`vercel.json` 为 `/runbooks/**` 设置 `no-cache, no-store, must-revalidate`，并为主要辅助文档目录设置低缓存，避免 agent 长期读取旧索引或旧正文。
+
+推荐 agent 使用稳定 base URL 作为入口：
+
+```text
+https://runbooks.junyou.me
+```
+
+查询流程采用 index-first：
+
+1. 读取 `{base_url}/runbooks/index.json`。
+2. 根据 `triggers`、`owner_skills`、`risk_level` 等字段选择 runbook。
+3. 按 entry 的 `path` 读取 `{base_url}/{entry.path}`。
+4. 根据 Markdown 正文中的输入证据、执行流程、验证命令和停止条件执行。
+
+更多字段语义和使用建议见 [Agent 远程查询说明](docs/agent-query.md)。本项目不提供 runtime/search API，也不生成前端页面；搜索和筛选由调用方 agent 在本地完成。
+
+远程 smoke 校验示例：
+
+```bash
+bash scripts/smoke-remote-runbooks.sh https://runbooks.junyou.me
+bash scripts/smoke-remote-runbooks.sh --expect-local runbooks/index.json https://runbooks.junyou.me
+```
+
 ## 与相关项目的关系
 
 - `opencode-starter`：负责 opencode 项目初始化、配置示例和启动约定；本项目只提供任务 runbook，可被 starter 链接或作为后续阅读材料。
@@ -69,3 +95,4 @@ bash scripts/validate-runbooks.sh
 ## 辅助脚本
 
 - `scripts/watch-pr.sh`：使用 `gh pr view` 轮询 PR checks 或 merged 状态；默认不自动 merge，支持在 PR merged 后执行受控的低风险 `--after-merge` 命令。
+- `scripts/smoke-remote-runbooks.sh`：校验 Vercel 等静态发布地址上的 `runbooks/index.json` 和每个 runbook path 是否可访问，可选对比本地 index 的 `id/path` 集合。
