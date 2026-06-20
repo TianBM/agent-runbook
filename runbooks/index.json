@@ -123,5 +123,31 @@
       "web-perf"
     ],
     "risk_level": "medium"
+  },
+  {
+    "id": "client-architecture-constraint-check",
+    "title": "Client architecture constraint check",
+    "path": "runbooks/client-architecture-constraint-check.md",
+    "summary": "Web/App 客户端开发前的架构约束检查 runbook，聚焦 API 合约、状态归属、有限值、宿主运行时和验证证据边界。",
+    "triggers": [
+      "客户端架构约束",
+      "前端架构约束",
+      "App 架构约束",
+      "Web/App 开发前检查",
+      "API 合约边界",
+      "状态归属",
+      "WebView contract",
+      "verification evidence",
+      "client architecture"
+    ],
+    "owner_skills": [
+      "web-react-dev",
+      "app-cross-platform-dev",
+      "testing-strategy",
+      "product-ui-ux-design",
+      "platform-observability",
+      "platform-release-and-rollout"
+    ],
+    "risk_level": "high"
   }
 ]
