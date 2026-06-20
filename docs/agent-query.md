@@ -29,6 +29,25 @@ https://runbooks.junyou.me
 
 这种方式让远端发布保持静态，同时让 agent 拥有稳定的机器入口。
 
+## 按需发现原则
+
+调用方不需要在每个 skill、每份项目文档或每条系统提示中逐条写死具体 runbook URL。更推荐的策略是：当 agent 判断当前任务属于稳定、可复用、步骤化流程时，先读取 `{base_url}/runbooks/index.json`，再由索引匹配具体 runbook。
+
+适合先查 runbook 的信号包括：
+
+- 任务涉及 PR 生命周期、CI 等待、合并授权、worktree 清理。
+- 任务涉及发布、部署、回滚、远程 smoke、Vercel alias、DNS、npm publish。
+- 任务涉及 doctor 诊断、缓存刷新、环境接管或重复性排障。
+- agent 认为“这应该有一套固定操作步骤”，但当前上下文没有足够确定的步骤。
+
+不适合先查 runbook 的情况：
+
+- 用户只是问概念解释或一次性判断。
+- 任务需要先读一手失败证据、代码或产品需求才能定性。
+- 已有更具体的 repo-local 指南、owner skill 或用户指令直接覆盖该流程。
+
+匹配不到 runbook 时，agent 应继续按当前 owner skill、仓库文档和用户指令执行；不要因为没有 runbook 就阻塞普通任务。
+
 ## 字段语义
 
 - `id`：稳定标识，用于日志、引用和本地缓存键。
@@ -40,7 +59,7 @@ https://runbooks.junyou.me
 
 ## 推荐使用方式
 
-- 将 base URL 固定在 agent 配置、系统提示或项目文档中。
+- 将 base URL 固定在 agent 配置、系统提示或项目文档中，但不要在每个 skill 里逐条硬编码具体 runbook URL。
 - 每次任务开始时读取最新 `runbooks/index.json`；不要长期缓存索引。
 - 对命中的 entry 再读取 Markdown 正文，避免把所有 runbook 常驻上下文。
 - 如果需要离线兜底，可缓存上次成功读取的 index 和 Markdown，但应标记来源 URL 与抓取时间。
