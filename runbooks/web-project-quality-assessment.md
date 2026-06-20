@@ -182,6 +182,122 @@ npm audit
 - 监控埋点：关键路径错误、核心交互、性能点和发布版本可关联。
 - 测试覆盖：测试验证用户行为和边界，不只验证实现细节。
 
+## Situation playbooks
+
+每个卡片统一按五项处理：识别信号、先取证、处理策略、验证方式、升级/转交。
+
+### 1. Deterministic check failure / 构建、类型、lint、测试失败
+
+- 识别信号：lint、typecheck、test、build、E2E 任一失败。
+- 先取证：记录命令、exit code、第一条真实错误、失败文件、报告路径。
+- 处理策略：先修根因；不要关闭 lint、skip test、忽略 TS 错误伪修复，除非用户明确接受技术债。
+- 验证方式：重跑失败命令；如影响面扩大，再跑相邻检查。
+- 升级/转交：无法取得日志时标记 `blocked`；疑似框架或依赖缺陷时交对应技术 owner。
+
+### 2. React/Vite SPA deep-link 404
+
+- 识别信号：刷新二级路由或直接访问 deep link 返回 404。
+- 先取证：记录路由模式、base path、构建产物、托管规则、失败 URL。
+- 处理策略：检查前端 router fallback、静态托管 rewrite、base 配置和资源路径。
+- 验证方式：本地预览或静态服务直接访问失败 URL；再访问根路径和静态资源。
+- 升级/转交：域名、DNS、CDN、生产托管规则变更转 [Web delivery lifecycle](web-delivery-lifecycle.md)。
+
+### 3. Scattered API calls / API 调用散落组件
+
+- 识别信号：组件内直接 `fetch`、axios、GraphQL 调用重复出现。
+- 先取证：列出调用位置、鉴权处理、错误映射、重试和取消策略。
+- 处理策略：收敛到 API client、hook 或 service 层；统一类型、错误和超时处理。
+- 验证方式：跑 typecheck、相关测试；人工检查调用入口是否减少且错误态仍可触达。
+- 升级/转交：接口契约不清、鉴权真相不在前端时转后端 owner。
+
+### 4. State ownership confusion / 状态所有权混乱
+
+- 识别信号：同一状态同时存在 URL、全局 store、表单、组件 state 或缓存中。
+- 先取证：画出状态来源、写入点、读取点、同步时机和失效条件。
+- 处理策略：确定单一 owner；区分服务端状态、URL 状态、表单状态和 UI 临时状态。
+- 验证方式：覆盖刷新、返回、筛选、提交失败、重复进入页面等行为测试。
+- 升级/转交：跨应用或微前端共享状态冲突，按微前端 owner 处理。
+
+### 5. Next.js server/client boundary issue
+
+- 识别信号：Server Component 使用浏览器 API，Client Component 泄露服务端逻辑或密钥。
+- 先取证：记录报错、文件边界、`use client` 位置、环境变量使用、导入链。
+- 处理策略：把浏览器交互留在 client；把密钥、数据访问和服务端能力留在 server。
+- 验证方式：跑 typecheck、build；检查客户端 bundle 不含服务端密钥或 server-only 代码。
+- 升级/转交：涉及后端接口、权限真相或密钥管理时转后端 owner。
+
+### 6. Next.js cache or SSR data leak risk
+
+- 识别信号：用户数据被缓存、跨用户串扰、SSR 页面展示旧数据或他人数据。
+- 先取证：记录数据获取方式、cache 设置、revalidate、cookies/headers 使用和复现路径。
+- 处理策略：区分公共数据和用户数据；用户数据不得进入共享缓存。
+- 验证方式：用两个账号或两组请求复现；检查响应头、页面 HTML 和服务端日志。
+- 升级/转交：疑似用户数据泄露为 Blocker；后端缓存、权限或数据隔离转后端 owner。
+
+### 7. Duplicate submit or missing final state
+
+- 识别信号：按钮可重复点击；提交后无成功、失败、禁用或恢复状态。
+- 先取证：记录表单路径、请求次数、按钮状态、失败响应和用户可见反馈。
+- 处理策略：提交中禁用或幂等；补齐成功态、失败态、重试、取消或回退路径。
+- 验证方式：E2E 或交互测试覆盖双击、慢网、失败、成功后返回。
+- 升级/转交：后端幂等、事务或重复订单风险转后端 owner。
+
+### 8. Frontend-only permission control
+
+- 识别信号：只靠隐藏按钮、路由守卫或前端角色判断控制敏感操作。
+- 先取证：记录接口响应、前端守卫、后端错误码、绕过路径和敏感动作。
+- 处理策略：前端只做体验层提示；权限真相必须由后端或平台策略判定。
+- 验证方式：用低权限账号直接请求接口；检查 UI、API 错误和审计线索一致。
+- 升级/转交：疑似权限绕过为 Blocker；后端契约和权限真相转后端 owner。
+
+### 9. H5/WebView host capability missing fallback
+
+- 识别信号：依赖宿主 API，普通浏览器、低版本宿主、弱网或离线时不可用。
+- 先取证：记录宿主 API、版本、失败设备、错误码、降级路径和用户影响。
+- 处理策略：能力探测优先；缺能力时给 fallback、引导升级或安全失败态。
+- 验证方式：在无宿主 API、低版本宿主、弱网场景跑核心路径。
+- 升级/转交：宿主壳能力、原生桥或 App 版本问题转 `miniapp-product-dev` / `app-cross-platform-dev`。
+
+### 10. Missing observability evidence
+
+- 识别信号：关键路径无错误上报、埋点、日志、指标、trace 或版本关联。
+- 先取证：列出关键路径、现有事件、错误边界、release 标识和查询入口。
+- 处理策略：补最小可验证信号；复杂监控设计不要在本 runbook 展开。
+- 验证方式：触发一次成功和一次失败路径，确认事件、错误或 trace 可查询。
+- 升级/转交：复杂监控方案、告警、日志/trace 体系转 `platform-observability`；生产健康转 Web delivery lifecycle。
+
+### 11. Micro-frontend isolation issue
+
+- 识别信号：子应用样式污染、路由冲突、全局变量冲突、共享依赖版本冲突。
+- 先取证：记录宿主、子应用、加载顺序、共享依赖、路由前缀和冲突复现路径。
+- 处理策略：隔离样式、路由、全局状态和依赖；明确宿主与子应用契约。
+- 验证方式：单独运行子应用、嵌入宿主运行、切换子应用后重复访问冲突路径。
+- 升级/转交：灰度、发布协同、回滚和生产路由切换转 Web delivery lifecycle。
+
+### 12. Component library API/type compatibility issue
+
+- 识别信号：组件 API 破坏兼容、类型变窄、默认值变化、样式或 DOM 结构破坏宿主。
+- 先取证：记录变更 diff、类型声明、storybook/demo、消费者报错和迁移说明。
+- 处理策略：保持兼容或提供迁移路径；breaking change 必须显式标注。
+- 验证方式：跑类型测试、组件测试、示例构建；用至少一个消费者场景验证。
+- 升级/转交：发布版本、包发布、生产消费者验证转 Web delivery lifecycle。
+
+### 13. Performance regression
+
+- 识别信号：首屏变慢、bundle 增大、交互卡顿、重复请求、列表滚动掉帧。
+- 先取证：记录基线、当前指标、bundle 报告、网络 waterfall、CPU profile 或用户路径。
+- 处理策略：先定位主因；再处理代码分割、图片、缓存、请求合并、虚拟列表或重渲染。
+- 验证方式：重跑相同场景的性能检查；比较关键指标和 bundle 变化。
+- 升级/转交：需要浏览器性能审计或 Core Web Vitals 分析时转 `web-perf`。
+
+### 14. Accessibility blocker
+
+- 识别信号：键盘无法完成路径、焦点丢失、表单无 label、弹窗不可读、颜色对比不足。
+- 先取证：记录页面、组件、键盘路径、屏幕阅读器或自动化 a11y 报告。
+- 处理策略：优先修阻断用户完成任务的问题；补语义、焦点管理、label 和状态通知。
+- 验证方式：键盘完成关键路径；跑已有 a11y 检查；人工确认焦点顺序和错误提示。
+- 升级/转交：复杂交互体验取舍转 `product-ui-ux-design`。
+
 ## Findings grading
 
 - Blocker：阻断交付或存在高危风险。
