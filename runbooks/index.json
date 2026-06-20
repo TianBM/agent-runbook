@@ -45,5 +45,20 @@
       "customize-opencode"
     ],
     "risk_level": "low"
+  },
+  {
+    "id": "pr-watch-and-continue",
+    "title": "PR 监听/合并后自动继续",
+    "path": "runbooks/pr-watch-and-continue.md",
+    "triggers": [
+      "PR 监听",
+      "合并后继续",
+      "watch checks",
+      "after merge"
+    ],
+    "owner_skills": [
+      "worktree-isolation"
+    ],
+    "risk_level": "high"
   }
 ]
