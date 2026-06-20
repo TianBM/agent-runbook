@@ -36,6 +36,20 @@ Vercel 发布时不需要构建步骤，仓库文件按静态资源分发：
 - 可停止：每篇 runbook 必须说明停止条件。
 - 可验证：每篇 runbook 必须说明验证命令。
 
+## 生态边界
+
+- `opencode-starter`：本地入口，负责安装、更新、项目初始化和 doctor 检查。
+- `opencode-skills`：触发与 owner 路由层，负责技能触发规则、流程边界和技能质量门禁。
+- `agent-runbook`：稳定流程层，负责沉淀可按步骤执行的操作流程、证据要求和真实交付路径。
+
+近期扩展按归属落到对应仓库：
+
+- starter 侧优先补 doctor 与版本发布闭环。
+- skills 侧优先补索引生成和触发治理。
+- runbook 侧优先补内网交付、CI 失败排障、发布回滚等稳定流程。
+
+不做动态搜索服务、数据库 registry、agent runtime、全量 runbook 注入或复杂遥测。继续保持静态、可审、按需读取。
+
 ## 扩展方向
 
 - 增加更多 runbook 分类索引。
