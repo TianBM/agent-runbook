@@ -22,6 +22,10 @@
       "minLength": 1,
       "description": "中文为主的标题。"
     },
+    "summary": {
+      "type": "string",
+      "description": "Runbook 的简短摘要，用于索引和远程查询。"
+    },
     "triggers": {
       "type": "array",
       "minItems": 1,
