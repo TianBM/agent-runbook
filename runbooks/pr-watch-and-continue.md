@@ -79,7 +79,7 @@ bash scripts/watch-pr.sh --repo OWNER/REPO --pr 123 --mode checks --timeout 60 -
 
 ## 常见失败
 
-- 把 watcher 当作 merge bot，绕过用户对具体 PR 和 head SHA 的合并授权。
+- 把 watcher 当作 merge bot，绕过 `worktree-isolation` 要求的明确合并指令。
 - 本地 watch 未设置 timeout，形成无界循环。
 - after-merge 命令不可幂等，重复事件导致重复发布或重复删除。
 - 在命令字符串中拼接未验证输入，扩大 `bash -lc` 风险。

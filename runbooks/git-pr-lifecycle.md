@@ -20,7 +20,7 @@ risk_level: high
 
 - 需要修改代码、提交 commit、推送分支或创建 PR。
 - 需要检查 PR checks，并向用户汇报是否可合并。
-- 用户在 PR 已创建后，对具体 PR 和 head SHA 明确说“合并”。
+- PR 已创建且当前待合并对象唯一，用户明确要求合并。
 
 ## 不适用
 
@@ -33,7 +33,7 @@ risk_level: high
 - 当前仓库路径、当前分支、目标分支。
 - `git status`、`git diff`、最近提交记录。
 - PR URL、head SHA、CI/checks 状态。
-- 用户对具体 PR 和 head SHA 的合并授权。
+- 用户的明确合并指令；授权判定以 `worktree-isolation` 为准，用户无需复述 PR 编号或 SHA。
 
 ## 执行流程
 
@@ -44,7 +44,7 @@ risk_level: high
 5. 使用仓库约定写 commit message，提交后再次检查状态。
 6. 推送当前功能分支，创建或更新 PR，不开启 auto-merge。
 7. 查看 checks；若失败，修复后重新提交并更新 PR。
-8. 仅在用户对具体 PR 和 head SHA 明确授权后执行合并。
+8. 展示待合并对象、目标分支、head SHA 和验证状态，等待明确合并指令。对象唯一时，“允许合并”即可。执行前由 agent 重新核对对象、版本及门禁，并用平台支持的 SHA 守卫执行本次合并，不开启自动合并；对象不明确或候选实质变化时按 `worktree-isolation` 处理。
 9. 合并完成且可验证后，清理本地 worktree、本地分支和远端源分支。
 
 ## 必须调用的 skill
@@ -67,7 +67,7 @@ git log --oneline -10
 - 在 main 或主检出直接开发。
 - stage 了无关文件、密钥或生成物。
 - PR checks 失败仍声称可以合并。
-- 用户只说“看起来可以”但未对 PR 和 head SHA 明确授权。
+- 把“看起来可以”之类的评审意见当成合并指令，或要求用户复述已展示的 SHA。
 - squash 合并后马上删分支，却没有平台合并证据。
 
 ## 停止条件
@@ -80,5 +80,5 @@ git log --oneline -10
 ## 可复用 Prompt
 
 ```text
-请按 Git PR 生命周期处理本次改动：先确认 worktree 隔离，完成修改和验证；提交前检查 status/diff/log；只提交预期文件；推送并创建 PR；查看 checks；没有我对具体 PR 和 head SHA 的明确授权前不要合并；合并后再按规则清理 worktree 和分支。
+请按 Git PR 生命周期处理本次改动：先确认 worktree 隔离，完成修改和验证；提交前检查 status/diff/log；只提交预期文件；推送并创建 PR；查看 checks；没有我的明确合并指令不要合并；由你核对当前对象和 head SHA；合并后再按规则清理 worktree 和分支。
 ```
